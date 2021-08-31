@@ -3,9 +3,9 @@ const express = require('express')
 const axios = require('axios')
 const key = process.env.SPOON_API_KEY
 
-const searchRouter = express.Router()
+const recipeRouter = express.Router()
 
-searchRouter.get('/', async (req, res, next) => {
+recipeRouter.get('/', async (req, res, next) => {
     try {
         const { recipe } = req.body
 
@@ -22,4 +22,4 @@ searchRouter.get('/', async (req, res, next) => {
     }
 })
 
-module.exports = searchRouter
+module.exports = recipeRouter
