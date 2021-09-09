@@ -5,7 +5,7 @@ const key = process.env.SPOON_API_KEY
 
 const recipeRouter = express.Router()
 
-recipeRouter.post('/', async (req, res, next) => {
+recipeRouter.get('/', async (req, res, next) => {
     try {
         const { recipe } = req.body
 
