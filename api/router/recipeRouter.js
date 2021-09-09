@@ -9,11 +9,11 @@ recipeRouter.post('/', async (req, res, next) => {
     try {
         const { recipe } = req.body
 
-        if (!recipe) {
-            res.status(403).json({
-                message: "Please provide a recipe to search"
-            })
-        } 
+        // if (!recipe) {
+        //     res.status(403).json({
+        //         message: "Please provide a recipe to search"
+        //     })
+        // } 
 
         const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${recipe}&number=100&addRecipeInformation=true&apiKey=${key}`)
         res.send(response.data.results)
