@@ -11,6 +11,12 @@ const app = express()
 app.use(cors())
 
 app.use(express.json())
+app.use((req, res, next) => {
+    res.header({ "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers":
+      "Origin, X-Requested-With, Content-Type, Accept" });
+    next();
+  });
 
 // mongoose to mongoDB connection
 mongoose.connect('mongodb+srv://Bryan:Bassbone5@cluster0.qylrd.mongodb.net/Reciplease?retryWrites=true&w=majority', {
