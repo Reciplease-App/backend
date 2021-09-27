@@ -31,6 +31,6 @@ app.use('/recipe', recipeRouter)
 
 const port = 5000
 
-app.listen(port, () => {
+setTimeout(app.listen(port, () => {
     console.log(`Serving at port ${port}`)
-})
+}), 30000)
