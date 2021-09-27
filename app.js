@@ -1,14 +1,8 @@
-import http from 'http'
+const http = require('http')
 const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cors = require('cors')
-
-mongoose.connect('mongodb+srv://Bryan:Bassbone5@cluster0.qylrd.mongodb.net/Reciplease?retryWrites=true&w=majority', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-})
 
 const userRouter = require('./api/router/userRouter')
 const recipeRouter = require('./api/router/recipeRouter')
@@ -26,19 +20,24 @@ app.use((req, res, next) => {
 })
 
 
-// mongoose to mongoDB connectio
+// mongoose to mongoDB connection
+mongoose.connect('mongodb+srv://Bryan:Bassbone5@cluster0.qylrd.mongodb.net/Reciplease?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+})
 
 app.use('/users', userRouter)
 app.use('/recipe', recipeRouter)
 
-app.use((err, res) => { //eslint-disable-line
+app.use((err, req, res, next) => { //eslint-disable-line
     res.status(err.status || 500).json({
         message: err.message, 
         stack: err.stack
     })
 })
 
-const port = 5000
+const port = process.env.PORT || 5000
 
 const httpServer = http.Server(app)
 
