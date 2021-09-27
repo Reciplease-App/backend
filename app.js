@@ -31,6 +31,12 @@ app.use('/recipe', recipeRouter)
 
 const port = 5000
 
-setTimeout(app.listen(port, () => {
-    console.log(`Serving at port ${port}`)
-}), 30000)
+app.on('ready', function() { 
+    app.listen(port, function(){ 
+        console.log("app is ready"); 
+    }); 
+}); 
+
+mongoose.connection.once('open', function() {
+    app.emit('ready'); 
+});
