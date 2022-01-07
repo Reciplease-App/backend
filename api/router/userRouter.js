@@ -39,7 +39,7 @@ userRouter.post('/login',
 
 userRouter.get('/saved_recipes',
     expressAsyncHandler(async (req, res) => {
-        const user = await User.findOne({ username: req.query.username })
+        const user = await User.findOne({ username: req.query.email })
         res.send(user.savedRecipes)
     })
 )
