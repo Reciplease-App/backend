@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cors = require('cors')
 
-const userRouter = require('./router/userRouter.js')
-const recipeRouter = require('./router/recipeRouter')
+const userRouter = require('./api/router/userRouter')
+const recipeRouter = require('./api/router/recipeRouter')
 
 const app = express()
 app.use(cors())
@@ -15,8 +15,10 @@ app.use((req, res, next) => {
     res.header({ "Access-Control-Allow-Origin": "*",
     // "Access-Control-Allow-Headers":
     //   "Origin, X-Requested-With, Content-Type, Accept" });
-    next();
-  });
+  })
+  next()
+})
+
 
 // mongoose to mongoDB connection
 mongoose.connect('mongodb+srv://Bryan:Bassbone5@cluster0.qylrd.mongodb.net/Reciplease?retryWrites=true&w=majority', {

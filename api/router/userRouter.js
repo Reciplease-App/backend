@@ -39,7 +39,7 @@ userRouter.post('/login',
 
 userRouter.get('/saved_recipes',
     expressAsyncHandler(async (req, res) => {
-        const user = await User.findOne({ username: req.query.username })
+        const user = await User.findOne({ email: req.body.email })
         res.send(user.savedRecipes)
     })
 )
@@ -63,10 +63,7 @@ userRouter.put('/saved_recipes',
     expressAsyncHandler(async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
         if (user) {
-            user.savedRecipes.push({
-                recipeId: req.body.recipe_id,
-                recipeName: req.body.recipe_name
-            })
+            user.savedRecipes.push(req.body.recipe)
             await user.save()
             res.send(user.savedRecipes)
         }
