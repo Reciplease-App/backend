@@ -1,11 +1,25 @@
+require('dotenv').config();
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const expressAsyncHandler = require('express-async-handler')
 const User = require('../model/userModel')
 const { generateToken } = require('../utils')
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+const crypto = require('crypto');
+const key = process.env.SG_KEY
+const mail = process.env.SERVICE_MAIL
+const link = process.env.RESET_LINK
 
 const userRouter = express.Router()
 
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: key
+    }
+}))
+
+// auth routes
 userRouter.post('/register',
     expressAsyncHandler(async (req, res) => {
         const user = new User({
@@ -20,7 +34,6 @@ userRouter.post('/register',
         })
     })
 )
-
 userRouter.post('/login', 
     expressAsyncHandler(async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
@@ -37,6 +50,44 @@ userRouter.post('/login',
     })
 )
 
+
+
+
+userRouter.post('/forgot-password', ((req, res) => {
+    User.findOne({email: req.body.email})
+        .then(user => {
+            if (!user) {
+                res.status(422).send({message: "Invalid email. Please try again"})
+            }
+
+            crypto.randomBytes(32, (err, buffer) => {
+                const resetPassWordToken = buffer.toString("hex")
+                
+                user.resetToken = resetPassWordToken;
+                user.expireToken = Date.now() + 36000;
+                user.save()
+                    .then(result => {
+                        transporter.sendMail({
+                            to:user.email,
+                            from: mail,
+                            subject: "password reset",
+                            html: `
+                            <h1>Reciplease</h1>
+                            <h3>Reset Password Request</h3>
+                            <p>You are receiving this email because there has been a request to reset your password. Please follow the link below to reset your password. Please note that this link will expire in one hour.</p>
+                            <a href=${link}>Reset Password</a>
+                            <p>Didn't make this request? Please disregard this message</p>
+                            `,
+                        })
+                    })
+                    .catch(err => console.log(err))
+            })
+            res.send({message: "Check email", token: user.resetToken})
+        })
+})
+)
+
+// recipe and user settings routes
 userRouter.get('/saved_recipes',
     expressAsyncHandler(async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
